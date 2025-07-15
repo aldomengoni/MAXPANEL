@@ -19,11 +19,11 @@
         <field name="name">res.country.state.municipality.parish.tree</field>
         <field name="model">res.country.state.municipality.parish</field>
         <field name="arch" type="xml">
-            <tree string="parishes">
+            <list string="parishes">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="municipality_id" options="{'no_create': True}"/>
-            </tree>
+            </list>
         </field>
     </record>
 

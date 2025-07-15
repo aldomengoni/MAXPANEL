@@ -19,11 +19,11 @@
         <field name="name">res.country.state.municipality.tree</field>
         <field name="model">res.country.state.municipality</field>
         <field name="arch" type="xml">
-            <tree string="municipalities">
+            <list string="municipalities">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="state_id" options="{'no_create': True}"/>
-            </tree>
+            </list>
         </field>
     </record>
 

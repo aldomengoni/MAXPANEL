@@ -5,12 +5,12 @@
         <field name="name">seniat.tabla.islr.tree</field>
         <field name="model">seniat.tabla.islr</field>
         <field name="arch" type="xml">
-            <tree string="SENIAT Tabla de calculo ISLR">
+            <list string="SENIAT Tabla de calculo ISLR">
                 <field name="code_seniat"/>
                 <field name="activity_name"/>
                 <field name="code_identification_seniat" />
                 <field name="seniat_partner_type_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -70,7 +70,7 @@ u
                         </group>
                         <group>
                             <field name="withholding_percentage" />
-                            <field name="withholding_amount" attrs="{'invisible': [('type_subtracting_rel', '!=', 'amount')]}"/>
+                            <field name="withholding_amount" invisible="type_subtracting_rel != 'amount'"/>
                         </group>
                     </group>
                 </sheet>
@@ -82,7 +82,7 @@ u
     <record id="act_seniat_tabla_islr" model="ir.actions.act_window">
         <field name="name">SENIAT Tabla de calculo ISLR</field>
         <field name="res_model">seniat.tabla.islr</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <menuitem 
         name="Tabla de calculo ISLR" 
