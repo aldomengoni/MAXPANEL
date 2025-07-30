@@ -21,14 +21,14 @@
          <field name="name">account.partial.reconcile.tree</field>
          <field name="model">account.partial.reconcile</field>
          <field name="arch" type="xml">
-            <tree create="0" default_order="create_date desc">
+            <list create="0" default_order="create_date desc">
                 <field name="create_date"/>
                 <field name="debit_move_id"/>
                 <field name="credit_move_id"/>
                 <field name="full_reconcile_id"/>
                 <field name="amount"/>
                 <field name="company_currency_id" invisible="1"/>
-            </tree>
+            </list>
          </field>
     </record>
 
@@ -41,9 +41,9 @@
                     <group>
                         <field name="debit_move_id" readonly="1"/>
                         <field name="credit_move_id" readonly="1"/>
-                        <field name="amount" attrs="{'readonly': [('full_reconcile_id', '!=', False)]}"/>
-                        <field name="credit_amount_currency" attrs="{'readonly': [('full_reconcile_id', '!=', False)]}"/>
-                        <field name="debit_amount_currency" attrs="{'readonly': [('full_reconcile_id', '!=', False)]}"/>
+                        <field name="amount" readonly="full_reconcile_id != False"/>
+                        <field name="credit_amount_currency" readonly="full_reconcile_id != False"/>
+                        <field name="debit_amount_currency" readonly="full_reconcile_id != False"/>
                         <field name="debit_currency_id" invisible="1"/>
                         <field name="credit_currency_id" invisible="1"/>
                     </group>

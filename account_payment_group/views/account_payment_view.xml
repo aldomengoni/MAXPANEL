@@ -72,14 +72,14 @@
                 <field name="company_currency_id" invisible="1"/>
                 <field name="other_currency" invisible="1"/>
                 <field name="force_amount_company_currency" invisible="1"/>
-                <label for="amount_company_currency" string="(on company currency)" attrs="{'invisible': [('other_currency', '=', False)]}"/>
-                <div name="amount_company_currency" class="o_row" attrs="{'invisible': [('other_currency', '=', False)]}">
-                    x <field name="exchange_rate"/> = <field name="amount_company_currency" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <label for="amount_company_currency" string="(on company currency)" invisible="other_currency == False"/>
+                <div name="amount_company_currency" class="o_row" invisible="other_currency == False">
+                    x <field name="exchange_rate"/> = <field name="amount_company_currency" readonly="state != 'draft'"/>
                 </div>
             </div>
 
             <button name="button_open_invoices" position="before">
-                <button name="button_open_payment_group" attrs="{'invisible': [('payment_group_id', '=', False)]}" type="object" class="oe_stat_button" icon="fa-circle">
+                <button name="button_open_payment_group" invisible="payment_group_id == False" type="object" class="oe_stat_button" icon="fa-circle">
                     Payment Group
                 </button>
             </button>
@@ -91,9 +91,9 @@
             <xpath expr="//field[@name='partner_id'][2]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <field name="is_internal_transfer" position="attributes">
+            <!-- <field name="is_internal_transfer" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </field>
+            </field> -->
 
         </field>
     </record>
@@ -107,16 +107,16 @@
             <field name="journal_id" position="attributes">
                 <attribute name="nolabel">1</attribute>
             </field>
-            <field name="destination_journal_id" position="attributes">
+            <!-- <field name="destination_journal_id" position="attributes">
                 <attribute name="nolabel">1</attribute>
-            </field>
+            </field> -->
             <xpath expr="//field[@name='journal_id']" position="before">
                 <field name="label_journal_id" nolabel="1"/>
             </xpath>
 
-            <xpath expr="//field[@name='destination_journal_id']" position="before">
+            <!-- <xpath expr="//field[@name='destination_journal_id']" position="before">
                 <field name="label_destination_journal_id" nolabel="1"/>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 

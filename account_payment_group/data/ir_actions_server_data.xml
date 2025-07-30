@@ -1,10 +1,13 @@
 <odoo>
 
-<record id="account.action_account_invoice_from_list" model="ir.actions.server">
-    <field name="code">
-        if records:
-            action = records.action_register_payment_group()
-    </field>
-</record>
-
+    <record id="account_payment_group.action_account_invoice_from_list" model="ir.actions.server">
+        <field name="name">Register Payment Group</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_register_payment_group()
+        </field>
+    </record>
 </odoo>

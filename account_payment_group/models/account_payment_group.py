@@ -308,7 +308,7 @@ class AccountPaymentGroup(models.Model):
                 payment_subtype = 'simple'
             rec.payment_subtype = payment_subtype
 
-    @api.depends('payment_ids.line_ids')
+    @api.depends('payment_ids.move_id.line_ids')
     def _compute_matched_move_line_ids(self):
         """
         Lar partial reconcile vinculan dos apuntes con credit_move_id y
@@ -319,7 +319,7 @@ class AccountPaymentGroup(models.Model):
         al revz (debit_move_id vs credit_move_id)
         """
         for rec in self:
-            payment_lines = rec.payment_ids.mapped('line_ids').filtered(lambda x: x.account_type in ['asset_receivable', 'liability_payable'])
+            payment_lines = rec.payment_ids.mapped('move_id.line_ids').filtered(lambda x: x.account_type in ['asset_receivable', 'liability_payable'])
             debit_moves = payment_lines.mapped('matched_debit_ids.debit_move_id')
             credit_moves = payment_lines.mapped('matched_credit_ids.credit_move_id')
             debit_lines_sorted = debit_moves.filtered(lambda x: x.date_maturity != False).sorted(key=lambda x: (x.date_maturity, x.move_id.name))
@@ -328,10 +328,10 @@ class AccountPaymentGroup(models.Model):
             credit_lines_without_date_maturity = credit_moves - credit_lines_sorted
             rec.matched_move_line_ids =  ((debit_lines_sorted + debit_lines_without_date_maturity) | (credit_lines_sorted + credit_lines_without_date_maturity)) - payment_lines
 
-    @api.depends('payment_ids.line_ids')
+    @api.depends('payment_ids.move_id.line_ids')
     def _compute_move_lines(self):
         for rec in self:
-            rec.move_line_ids = rec.payment_ids.mapped('line_ids')
+            rec.move_line_ids = rec.payment_ids.mapped('move_id.line_ids')
 
     @api.depends('to_pay_amount', 'payments_amount')
     def _compute_payment_difference(self):

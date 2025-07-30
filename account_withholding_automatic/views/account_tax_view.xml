@@ -19,9 +19,9 @@
                             <field name="withholding_rule_ids" invisible="withholding_type != 'based_on_rule'" nolabel="1" colspan="2">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle"/>
-                                    <field name="domain"/>
-                                    <field name="percentage"/>
-                                    <field name="fix_amount"/>
+                                    <!-- <field name="domain"/> -->
+                                    <!-- <field name="percentage"/> -->
+                                    <!-- <field name="fix_amount"/> -->
                                 </tree>
                             </field>
                         </group>

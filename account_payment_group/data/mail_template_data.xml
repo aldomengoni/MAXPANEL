@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
 <odoo>
-
-    <!-- Mail template is done in a NOUPDATE block
-         so users can freely customize/delete them -->
     <data noupdate="1">
-
-        <!--Email template -->
+        <!-- Email template actualizado para Odoo 18 -->
         <record id="email_template_edi_payment_group" model="mail.template">
             <field name="name">Customer/Supplier Payment - Send by Email</field>
             <field name="subject">{{object.company_id.name}} {{object.partner_type == 'supplier' and 'Payment Order' or 'Receipt'}} {{object.display_name or 'n/a'}}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="model_id" ref="account_payment_group.model_account_payment_group"/>
             <field name="auto_delete" eval="True"/>
-            <field name="report_name">{{(object.partner_type == 'supplier' and 'Payment_order_' or 'Receipt_' + object.display_name or '').replace('/','_')}}</field>
-            <field name="report_template" ref="account_payment_group.action_report_payment_group"/>
+            
+            <!-- Campo many2many para los reportes -->
+            <field name="report_template_ids" eval="[(6, 0, [ref('account_payment_group.action_report_payment_group')])]"/>
+            
+            <!-- Asignar el nombre del reporte en el registro de informe -->
+            <!-- <field name="user_signature" eval="False"/> -->
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
@@ -32,7 +32,14 @@
         </t>
     </p>
 </div>
-</field>
+            </field>
+        </record>
+        
+        <!-- Actualizar el reporte existente para establecer el nombre dinámico -->
+        <record id="account_payment_group.action_report_payment_group" model="ir.actions.report">
+            <field name="print_report_name">
+                (('Payment_order_' if object.partner_type == 'supplier' else 'Receipt_') + (object.display_name or 'n/a')).replace('/', '_')
+            </field>
         </record>
     </data>
 </odoo>

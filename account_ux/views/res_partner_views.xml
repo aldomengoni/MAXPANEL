@@ -9,11 +9,11 @@
                 <button class="oe_stat_button" type="object" groups="account.group_account_invoice" name="action_open_reconcile" icon="fa-usd" string="Match Payments">
                 </button>
             </div>
-            <xpath expr="//page[@name='accounting']//group" position="after">
+            <!-- <xpath expr="//page[@name='accounting']//group" position="after">
                 <group>
                     <field name="last_time_entries_checked" readonly="0" groups="base.group_no_one"/>
                 </group>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 

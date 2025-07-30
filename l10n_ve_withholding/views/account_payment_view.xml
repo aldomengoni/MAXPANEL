@@ -24,13 +24,13 @@
                 <field name="payment_method_code" invisible="1"/>
                 <field name="is_iva_record" invisible="1"/>
                 <button 
-                    name="%(action_report_withholding_certificate)d" 
+                    name="%(l10n_ve_withholding.action_report_withholding_certificate)d" 
                     icon="fa-print " 
                     string="Print withholding voucher" 
                     type="action" 
                     invisible="payment_method_code != 'withholding' or partner_type != 'supplier' or is_iva_record == True"/>
                 <button 
-                    name="%(action_report_withholding_certificate_iva)d" 
+                    name="%(l10n_ve_withholding.action_report_withholding_certificate_iva)d" 
                     icon="fa-print " 
                     string="Print withholding voucher" 
                     type="action" 
