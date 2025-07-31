@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class AccountChartTemplate(models.Model):
+class AccountChartTemplate(models.AbstractModel):
     _inherit = 'account.chart.template'
 
     def _load_template(self, company, code_digits=None, account_ref=None, taxes_ref=None):

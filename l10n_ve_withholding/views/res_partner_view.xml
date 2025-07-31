@@ -13,7 +13,7 @@
                 <field name="seniat_partner_type_id" />
                 <field 
                     name="seniat_regimen_islr_ids" 
-                    attrs="{'invisible': [('seniat_partner_type_id', '==', False)]}"/>
+                    invisible="seniat_partner_type_id == False"/>
           </field>
         </field>
     </record>

@@ -7,8 +7,12 @@
         <field name="arch" type="xml">
             <!-- make default_account_id optional if withholdings journal -->
             <field name="default_account_id" position="attributes">
-                <attribute name="attrs">{'required': ['|', '&amp;', '&amp;', ('id', '!=', False), ('type', 'in', ('bank', 'cash')), '!', ('selected_payment_method_codes', 'like', 'withholding'), ('type', 'in', ('sale', 'purchase'))],
-                                                       'invisible': [('type', '=', False)]}</attribute>
+                <attributes name="invisible">
+                    account_type == False
+                </attributes>
+                <attributes name="required">
+                    (id != False and account_type in ['bank', 'cash'] and 'withholding' not in selected_payment_method_codes) or account_type in ['bank', 'cash']
+                </attributes>
             </field>
         </field>
     </record>

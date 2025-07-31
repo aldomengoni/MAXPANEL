@@ -15,15 +15,15 @@
         </field>
     </record>
 
-    <record id="view_res_country_state_municipality_tree" model="ir.ui.view">
-        <field name="name">res.country.state.municipality.tree</field>
+    <record id="view_res_country_state_municipality_list" model="ir.ui.view">
+        <field name="name">res.country.state.municipality.list</field>
         <field name="model">res.country.state.municipality</field>
         <field name="arch" type="xml">
-            <tree string="municipalities">
+            <list string="municipalities">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="state_id" options="{'no_create': True}"/>
-            </tree>
+            </list>
         </field>
     </record>
 

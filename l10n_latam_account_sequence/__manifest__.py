@@ -9,7 +9,7 @@
     'version': '1.0',
     'category': 'Hidden',
     'description': "Change the way `sequence.mixin` works to reduce concurrency errors",
-    'depends': ['l10n_latam_invoice_document', 'account_sequence'],
+    'depends': ['l10n_latam_invoice_document', 'account'],
     'installable': True,
     'auto_install': True,
     'license': 'LGPL-3',

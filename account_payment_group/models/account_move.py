@@ -34,7 +34,7 @@ class AccountMove(models.Model):
     )
 
     payment_group_id = fields.Many2one(
-        related='payment_id.payment_group_id',
+        related='payment_ids.payment_group_id',
         store=True,
     )
 
@@ -196,7 +196,7 @@ class AccountMove(models.Model):
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         if self._context.get('without_payment_group'):
             args += [('payment_group_id', '=', False)]
-        return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
+        return super()._search(args, offset=offset, limit=limit, order=order)
 
     def _auto_init(self):
         super()._auto_init()

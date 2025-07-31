@@ -7,7 +7,7 @@
 
 {
     'name': 'Comprobantes para Factura Venezolana',
-    'version': '15.0.0.1',
+    'version': '18.0.0.1',
     'description': """
     **Comprobantes para Factura Venezolana**
     ¡Felicidades!. Este es el módulo para Generar Comprobantes PDF de

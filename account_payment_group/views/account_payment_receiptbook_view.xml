@@ -20,7 +20,7 @@
         <field name="name">account.payment.receiptbook.tree</field>
         <field name="model">account.payment.receiptbook</field>
         <field name="arch" type="xml">
-            <tree string="Receipt Books">
+            <list string="Receipt Books">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="report_partner_id"/>
@@ -28,7 +28,7 @@
                 <field name="partner_type"/>
                 <field name="document_type_id"/>
                 <field name="company_id" widget="selection" groups="base.group_multi_company"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -44,14 +44,14 @@
                             <field name="partner_type"/>
                             <field name="report_partner_id"/>
                             <field name="sequence_type"/>
-                            <field name="padding" attrs="{'invisible':[('sequence_type','!=','manual')],'required':[('sequence_type','=','manual')]}"/>
+                            <field name="padding" invisible="sequence_type != 'manual'" required="sequence_type == 'manual'"/>
                             <field name="prefix"/>
                             <field name="mail_template_id"  context="{'default_model': 'account.payment.group'}"/>
                         </group>
                         <group>
                             <field name="document_type_id"/>
-                            <field name="sequence_id" attrs="{'invisible':[('sequence_type','!=','automatic')]}"/>
-                            <field name="next_number" attrs="{'invisible':[('sequence_type','!=','automatic')]}"/>
+                            <field name="sequence_id" invisible="sequence_type != 'manual'"/>
+                            <field name="next_number" invisible="sequence_type != 'manual'"/>
                             <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                             <field name="active"/>
                         </group>
@@ -64,7 +64,7 @@
     <record id="action_receiptbook_form" model="ir.actions.act_window">
         <field name="name">Receiptbooks</field>
         <field name="res_model">account.payment.receiptbook</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_receipt_receiptbook_search"/>
     </record>
 
