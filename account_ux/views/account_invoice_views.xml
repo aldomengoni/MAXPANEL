@@ -62,7 +62,7 @@
                     <button name="%(action_account_change_currency)d" type="action" class="oe_inline oe_link" string="(change)" attrs="{'invisible':[('state','!=','draft')]}" groups="account.group_account_user"/>
                 </div>
             </field>
-            <xpath expr="//field[@name='tax_line_ids']/tree" position="attributes">
+            <xpath expr="//field[@name='tax_line_ids']/list" position="attributes">
                 <attribute name="create">false</attribute>
             </xpath>
             <field name="tax_line_ids" position="after">

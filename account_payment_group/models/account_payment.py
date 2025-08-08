@@ -59,6 +59,12 @@ class AccountPayment(models.Model):
         compute='_compute_label'
     )
 
+    l10n_latam_document_type_id = fields.Many2one(
+        'l10n_latam.document.type',
+        string='l10n_latam_document_type',
+    )
+
+    
     @api.depends('payment_type', 'payment_group_id')
     def _compute_available_journal_ids(self):
         """
@@ -168,7 +174,7 @@ class AccountPayment(models.Model):
     def create(self, vals_list):
         """ If a payment is created from anywhere else we create the payment group in top """
         recs = super().create(vals_list)
-        for rec in recs.filtered(lambda x: not x.payment_group_id and not x.is_internal_transfer).with_context(
+        for rec in recs.filtered(lambda x: not x.payment_group_id and not x.paired_internal_transfer_payment_id).with_context(
                 created_automatically=True):
             if not rec.partner_id:
                 raise ValidationError(_(
@@ -178,7 +184,7 @@ class AccountPayment(models.Model):
                 'partner_type': rec.partner_type,
                 'partner_id': rec.partner_id.id,
                 'payment_date': rec.date,
-                'communication': rec.ref,
+                'communication': rec.payment_reference,
             })
             rec.payment_group_id.post()
         return recs

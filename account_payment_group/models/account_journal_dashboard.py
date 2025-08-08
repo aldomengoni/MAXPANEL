@@ -4,7 +4,7 @@ from odoo import models
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
-    def open_payments_action(self, payment_type, mode='tree'):
+    def open_payments_action(self, payment_type, mode='list'):
         if payment_type == 'transfer':
             ctx = self._context.copy()
             ctx.update({

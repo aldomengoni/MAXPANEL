@@ -85,7 +85,7 @@
         </div>
       </t>
     </xpath>
-    <div class="clearfix" position="after">
+    <xpath expr="//div[@id='total']" position="after">
         <t t-if="o.currency_id != o.company_id.currency_id">
             <br/> <p>
             Se Aplicó la Tasa de Cambio Oficial del Banco Central de Venezuela (BCV) de  
@@ -96,6 +96,6 @@
             </p>
             <p><b>PARA EFECTOS DEL PAGO DEBE UTILIZARSE LA TASA VIGENTE AL DIA DE PAGO</b></p>
         </t>
-    </div>
+    </xpath>
   </template>
 </odoo>

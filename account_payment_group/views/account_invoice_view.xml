@@ -6,7 +6,7 @@
     <field name="model">account.invoice</field>
     <field eval="99" name="priority"/>
     <field name="arch" type="xml">
-        <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">
+        <list decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">
             <!-- <field name="partner_id" groups="base.group_user" string="Customer"/> -->
             <field name="date_invoice"/>
             <field name="number"/>
@@ -24,7 +24,7 @@
             <field name="company_currency_id" invisible="1"/>
             <field name="state"/>
             <field name="type" invisible="context.get('type',True)"/>
-        </tree>
+        </list>
     </field>
 </record>
 
@@ -48,7 +48,7 @@
             <button type="object"  name="action_view_payment_groups"
                     class="oe_link" string="View Payments"
                     colspan="2"
-                    attrs="{'invisible':[('payment_group_ids','=',[])]}"/>
+                    invisible="payment_group_ids=[]"/>
         </field>
     </field>
 </record>
@@ -73,7 +73,7 @@
             <button type="object"  name="action_view_payment_groups"
                     class="oe_link" string="View Payments"
                     colspan="2"
-                    attrs="{'invisible':[('payment_group_ids','=',[])]}"/>
+                    invisible="payment_group_ids=[]"/>
         </field>
     </field>
 </record>
