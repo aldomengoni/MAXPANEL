@@ -20,10 +20,10 @@
                 <field name="type" invisible="1"/>
                 <header>
                     <!-- <button name="action_print" string="Print" states="draft" type="object" class="oe_highlight"/> -->
-                    <button name="action_print" string="Print" invisible="state != 'cancel' or 'presented'" type="object"/>
-                    <button name="action_present" string="Present" invisible="state != 'draft'" type="object" class="oe_highlight"/>
-                    <button name="action_cancel" string="Cancel" invisible="state != 'cancel' or 'presented'" type="object"/>
-                    <button name="action_to_draft" string="To Draft" invisible="state != 'cancel'" type="object"/>
+                    <button name="action_print" string="Print" invisible="state not in ['cancel','presented']" type="object"/>
+                    <button name="action_present" string="Present" invisible="state not in ['draft']" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" invisible="state not in ['draft','presented']" type="object"/>
+                    <button name="action_to_draft" string="To Draft" invisible="state not in ['cancel']" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,presented"/>
                 </header>
                 <sheet>
