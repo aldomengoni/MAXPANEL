@@ -62,9 +62,14 @@ class AccountPayment(models.Model):
     l10n_latam_document_type_id = fields.Many2one(
         'l10n_latam.document.type',
         string='l10n_latam_document_type',
-    )
+        )
+    is_internal_transfer = fields.Boolean(
+        compute='_compute_is_internal_transfer',
+        string='Is Internal Transfer',
+        store=False
+        )
 
-    
+
     @api.depends('payment_type', 'payment_group_id')
     def _compute_available_journal_ids(self):
         """
@@ -174,6 +179,7 @@ class AccountPayment(models.Model):
     def create(self, vals_list):
         """ If a payment is created from anywhere else we create the payment group in top """
         recs = super().create(vals_list)
+        _logger.info(recs.read())
         for rec in recs.filtered(lambda x: not x.payment_group_id and not x.paired_internal_transfer_payment_id).with_context(
                 created_automatically=True):
             if not rec.partner_id:
@@ -258,7 +264,9 @@ class AccountPayment(models.Model):
         if self._context.get('default_is_internal_transfer'):
             self.is_internal_transfer = True
         else:
-            return super()._compute_is_internal_transfer()
+            self.is_internal_transfer = False
+
+        #     return super()._compute_is_internal_transfer()
 
     def _create_paired_internal_transfer_payment(self):
         for rec in self:
