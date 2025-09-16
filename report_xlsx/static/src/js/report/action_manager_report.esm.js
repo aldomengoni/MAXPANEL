@@ -22,7 +22,7 @@ registry
                 }
                 if (type === "xlsx") {
                     const context = encodeURIComponent(
-                        JSON.stringify(env.services.user.context)
+                        JSON.stringify(env.services.session ? env.services.session.user_context : {})
                     );
                     url += `?context=${context}`;
                 }
@@ -33,7 +33,7 @@ registry
                     url: "/report/download",
                     data: {
                         data: JSON.stringify([url, action.report_type]),
-                        context: JSON.stringify(env.services.user.context),
+                        context: JSON.stringify(env.services.session ? env.services.session.user_context : {}),
                     },
                 });
             } finally {
