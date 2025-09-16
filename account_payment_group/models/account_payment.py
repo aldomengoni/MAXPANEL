@@ -233,8 +233,8 @@ class AccountPayment(models.Model):
         self.ensure_one()
         return self.payment_group_id.get_formview_action()
 
-    def _prepare_move_line_default_vals(self, write_off_line_vals=None):
-        res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals)
+    def _prepare_move_line_default_vals(self, write_off_line_vals=None, force_balance=None):
+        res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals, force_balance=force_balance)
         if self.force_amount_company_currency:
             difference = self.force_amount_company_currency - res[0]['credit'] - res[0]['debit']
             if res[0]['credit']:

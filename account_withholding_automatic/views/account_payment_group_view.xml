@@ -16,7 +16,7 @@
                     <attribute name="invisible">partner_type != 'supplier' or state not in ['draft', 'confirmed']</attribute>
                 </field>
                         <field name="to_pay_amount" options="{'currency_field': 'currency_id'}" />
-                <button position="before">
+                <button name="post" position="before">
                     <!-- <button name="compute_withholdings" string="Compute Withholdings" type="object" states="confirmed"/> -->
                     <button name="compute_withholdings" string="Compute Withholdings" type="object" invisible="partner_type != 'supplier' or state not in ['draft', 'confirmed']"/>
                 </button>
