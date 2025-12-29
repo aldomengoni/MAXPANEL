@@ -98,7 +98,7 @@ class AccountPayment(models.Model):
                 rep_line.tax_id.name))
         return rep_line
 
-    def _prepare_move_line_default_vals(self, write_off_line_vals=None,,force_balance=False):
+    def _prepare_move_line_default_vals(self, write_off_line_vals=None):
         res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals)
 
         if self.payment_method_code == 'withholding':
