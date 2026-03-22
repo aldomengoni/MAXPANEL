@@ -56,6 +56,10 @@
         <button id="account_invoice_payment_btn" position="attributes">
             <attribute name="name">action_register_payment_group</attribute>
         </button>
+        
+        <button id="account_invoice_payment_secondary_btn" position="attributes">
+            <attribute name="name">action_register_payment_group</attribute>
+        </button>
 
         <field name="invoice_payments_widget" position="after">
             <field name="payment_group_ids" invisible="1"/>

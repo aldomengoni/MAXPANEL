@@ -59,6 +59,17 @@ class AccountPayment(models.Model):
         compute='_compute_label'
     )
 
+    l10n_latam_document_type_id = fields.Many2one(
+        'l10n_latam.document.type',
+        string='l10n_latam_document_type',
+        )
+    is_internal_transfer = fields.Boolean(
+        compute='_compute_is_internal_transfer',
+        string='Is Internal Transfer',
+        store=False
+        )
+
+
     @api.depends('payment_type', 'payment_group_id')
     def _compute_available_journal_ids(self):
         """
@@ -168,7 +179,8 @@ class AccountPayment(models.Model):
     def create(self, vals_list):
         """ If a payment is created from anywhere else we create the payment group in top """
         recs = super().create(vals_list)
-        for rec in recs.filtered(lambda x: not x.payment_group_id and not x.is_internal_transfer).with_context(
+        _logger.info(recs.read())
+        for rec in recs.filtered(lambda x: not x.payment_group_id and not x.paired_internal_transfer_payment_id).with_context(
                 created_automatically=True):
             if not rec.partner_id:
                 raise ValidationError(_(
@@ -178,7 +190,7 @@ class AccountPayment(models.Model):
                 'partner_type': rec.partner_type,
                 'partner_id': rec.partner_id.id,
                 'payment_date': rec.date,
-                'communication': rec.ref,
+                'communication': rec.payment_reference,
             })
             rec.payment_group_id.post()
         return recs
@@ -221,8 +233,8 @@ class AccountPayment(models.Model):
         self.ensure_one()
         return self.payment_group_id.get_formview_action()
 
-    def _prepare_move_line_default_vals(self, write_off_line_vals=None):
-        res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals)
+    def _prepare_move_line_default_vals(self, write_off_line_vals=None, force_balance=None):
+        res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals, force_balance=force_balance)
         if self.force_amount_company_currency:
             difference = self.force_amount_company_currency - res[0]['credit'] - res[0]['debit']
             if res[0]['credit']:
@@ -252,7 +264,9 @@ class AccountPayment(models.Model):
         if self._context.get('default_is_internal_transfer'):
             self.is_internal_transfer = True
         else:
-            return super()._compute_is_internal_transfer()
+            self.is_internal_transfer = False
+
+        #     return super()._compute_is_internal_transfer()
 
     def _create_paired_internal_transfer_payment(self):
         for rec in self:

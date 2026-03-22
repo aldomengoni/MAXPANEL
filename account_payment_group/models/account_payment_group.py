@@ -3,6 +3,9 @@
 
 from odoo import models, api, fields, _
 from odoo.exceptions import ValidationError
+from odoo.tools import html2plaintext
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class AccountPaymentGroup(models.Model):
@@ -311,7 +314,7 @@ class AccountPaymentGroup(models.Model):
     @api.depends('payment_ids.move_id.line_ids')
     def _compute_matched_move_line_ids(self):
         """
-        Lar partial reconcile vinculan dos apuntes con credit_move_id y
+        Lar partial reconcile vinculan dos apuntes con credit_move_ipayment_idsd y
         debit_move_id.
         Buscamos primeros todas las que tienen en credit_move_id algun apunte
         de los que se genero con un pago, etnonces la contrapartida
@@ -396,7 +399,7 @@ class AccountPaymentGroup(models.Model):
         return {
             'name': _('Journal Items'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.move.line',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -462,7 +465,6 @@ class AccountPaymentGroup(models.Model):
             # documen type) o es de un grupo de pagos. Pero mas alla de eso no tiene un gran uso, viene un poco legacy
             # y ya está configurado en los receibooks
             rec.payment_ids.l10n_latam_document_type_id = rec.document_type_id.id
-
             if not rec.payment_ids:
                 raise ValidationError(_(
                     'You can not confirm a payment group without payment lines!'))
@@ -487,15 +489,31 @@ class AccountPaymentGroup(models.Model):
                     rec.payment_ids.mapped('name')) or False
 
             if not created_automatically:
-                counterpart_aml = rec.payment_ids.mapped('line_ids').filtered(
+                counterpart_aml = rec.payment_ids.mapped('move_id.line_ids').filtered(
                     lambda r: not r.reconciled and r.account_id.account_type in ('liability_payable', 'asset_receivable'))
                 if counterpart_aml and rec.to_pay_move_line_ids:
                     (counterpart_aml + (rec.to_pay_move_line_ids)).reconcile()
 
             rec.state = 'posted'
+            
+            # if rec.receiptbook_id.mail_template_id:
+            #     try:
+            #         # Intentar obtener cuerpo como texto plano
+            #         body = rec.receiptbook_id.mail_template_id.body_plaintext
+            #     except AttributeError:
+            #         # Convertir HTML a texto plano si no hay versión de texto
+            #         body = html2plaintext(
+            #             rec.receiptbook_id.mail_template_id.body_html 
+            #         )
+            
+            # # Enviar SMS
+            # rec._message_sms(
+            #     body=body, 
+            #     partner_ids=rec.partner_id.ids
+            # )
 
-            if rec.receiptbook_id.mail_template_id:
-                rec.message_post_with_template(rec.receiptbook_id.mail_template_id.id)
+            # if rec.receiptbook_id.mail_template_id:
+            #     rec._message_sms_with_template(template=rec.receiptbook_id.mail_template_id)
         return True
 
     @api.returns('mail.message', lambda value: value.id)

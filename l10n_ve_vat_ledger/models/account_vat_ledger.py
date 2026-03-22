@@ -36,23 +36,17 @@ class AccountVatLedger(models.Model):
     )
     date_from = fields.Date(
         string='Start Date',
-        required=True,
-        readonly=True,
-        states={'draft': [('readonly', False)]},
+        required=True
     )
     date_to = fields.Date(
         string='End Date',
-        required=True,
-        readonly=True,
-        states={'draft': [('readonly', False)]},
+        required=True
     )
     journal_ids = fields.Many2many(
         'account.journal', 'account_vat_ledger_journal_rel',
         'vat_ledger_id', 'journal_id',
         string='Journals',
-        required=True,
-        readonly=True,
-        states={'draft': [('readonly', False)]},
+        required=True
     )
     state = fields.Selection(
         [('draft', 'Draft'), ('presented', 'Presented'), ('cancel', 'Cancel')],

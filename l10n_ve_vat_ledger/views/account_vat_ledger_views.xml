@@ -20,18 +20,18 @@
                 <field name="type" invisible="1"/>
                 <header>
                     <!-- <button name="action_print" string="Print" states="draft" type="object" class="oe_highlight"/> -->
-                    <button name="action_print" string="Print" states="cancel,presented" type="object"/>
-                    <button name="action_present" string="Present" states="draft" type="object" class="oe_highlight"/>
-                    <button name="action_cancel" string="Cancel" states="draft,presented" type="object"/>
-                    <button name="action_to_draft" string="To Draft" states="cancel" type="object"/>
+                    <button name="action_print" string="Print" invisible="state not in ['cancel','presented']" type="object"/>
+                    <button name="action_present" string="Present" invisible="state not in ['draft']" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" invisible="state not in ['draft','presented']" type="object"/>
+                    <button name="action_to_draft" string="To Draft" invisible="state not in ['cancel']" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,presented"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="company_id" widget="selection" />
-                            <field name="date_from"/>
-                            <field name="date_to"/>
+                            <field name="date_from" readonly="state not in ['draft']"/>
+                            <field name="date_to" readonly="state not in ['draft']"/>
                         </group>
                         <group>
                             <field name="reference"/>
@@ -39,7 +39,7 @@
                     </group>
                     <notebook>
                         <page string="Journals" name="journal_ids">
-                            <field name="journal_ids" domain="[('type', '=', type), ('company_id', '=', company_id)]"/>
+                            <field name="journal_ids" domain="[('type', '=', type), ('company_id', '=', company_id)]" readonly="state not in ['draft']"/>
                         </page>
                         <page string="Invoices" name="invoices">
                             <field name="invoice_ids">
@@ -61,10 +61,10 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
+                <chatter>
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
-                </div>
+                </chatter>
             </form>
         </field>
     </record>
