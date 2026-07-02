@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    
     <template id="report_withholding_certificate_document" inherit_id="l10n_ve_withholding.report_withholding_certificate_document">
         <xpath expr="//t" position="replace">
             <t t-call="web.basic_layout">
