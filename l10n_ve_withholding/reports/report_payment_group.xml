@@ -69,7 +69,7 @@
                             <td>
                                 <span t-field="line.journal_id.name"/>
                                 <t t-if="line.other_currency">
-                                    <span> (</span><span t-field="line.amount_signed" t-options='{"widget": "monetary", "display_currency": line.currency_id}'/><span>)</span>
+                                    <span> (</span><span t-field="line.amount_signed" t-options='{"widget": "monetary", "display_currency": line.currency_id}'/><span test=" )">)</span>
                                 </t>
                             </td>
                             <td class="text-right o_price_total"><span class="text-nowrap" t-field="line.amount_company_currency"/></td>
@@ -78,7 +78,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td><strong><span>Total Pagado</span></strong></td>
+                        <td>return <strong><span>Total Pagado</span></strong></td>
                         <td class="text-right"><strong><span class="text-nowrap" t-field="o.payments_amount"/></strong></td>
                     </tr>
                 </tfoot>
@@ -112,7 +112,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="3"><strong><span>Total Imputado</span></strong></td>
-                        <td class="text-right"><strong><span class="text-nowrap" t-out="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                        <td class="text-right">礼<strong><span class="text-nowrap" t-out="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
                     </tr>
                 </tfoot>
             </table>
