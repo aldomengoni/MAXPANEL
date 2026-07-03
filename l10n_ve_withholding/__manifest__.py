@@ -32,7 +32,7 @@
         'reports/report_templates.xml',
         'reports/report_withholding_certificate.xml',
         'reports/report_withholding_certificate_iva.xml',
-        'reports/report_payment_group.xml',
+        #'reports/report_payment_group.xml',
         'views/account_payment_view.xml',
         'views/res_partner_view.xml',
         'security/ir.model.access.csv',
@@ -42,7 +42,7 @@
         'views/seniat_factor_view.xml',
         'views/seniat_partner_type_view.xml',
         'views/seniat_tabla_islr_view.xml',
-        'views/account_payment_group_view.xml',
+        #'views/account_payment_group_view.xml',
     ],
 
 }

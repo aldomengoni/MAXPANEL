@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_withholding_certificate_document_iva_inherit" inherit_id="l10n_ve_withholding.report_withholding_certificate_document_iva">
+      <template id="report_withholding_certificate_document_iva_inherit" inherit_id="l10n_ve_withholding.report_withholding_certificate_document_iva">
         <xpath expr="//t" position="replace">
             <t t-call="web.basic_layout">
                 <t t-set="o" t-value="o.with_context(lang=lang)" />
@@ -20,15 +20,7 @@
                         <div class="col-2 text-end"><span>Ley IVA - Art. 11: </span></div>
                         <div class="col-6 text-start">
                             <span>
-                                "La Administración Tributaria podrá designar como responsables del pago del impuesto, en calidad de
-                            </span>
-                            <br/>
-                            <span>
-                                agentes de retención, a quienes por sus funciones públicas o por razón de sus actividades privadas,
-                            </span>
-                            <br/>
-                            <span>
-                                intervengan en operaciones gravadas con el impuesto establecido en esta Ley."
+                                "La Administración Tributaria podrá designar como responsables del pago del impuesto, en calidad de agentes de retención, a quienes por sus funciones públicas o por razón de sus actividades privadas, intervengan en operaciones gravadas con el impuesto establecido en esta Ley."
                             </span>
                         </div>
                         <div class="col-2 me-2">
@@ -52,6 +44,8 @@
                                 <b><span class="left-space" t-field="o.company_id.name" /></b>
                             </div>
                         </div>
+                    </div>
+                    <div class="row mt-3">
                         <div class="col-2 me-2">
                             <div class="border-box">
                                 <span>3. RIF del agente de retención</span><br />
@@ -104,117 +98,56 @@
                     <table class="table w-100 borderless">
                         <thead>
                             <tr class="mt-0" style="border-top:2px solid black;">
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Nº Oper</strong>
-                                    </div>    
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Fecha de la factura</strong>
-                                    </div>    
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Número de factura</strong>
-                                    </div>
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Número de Control</strong>
-                                    </div>
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Núm. nota de débito</strong>
-                                    </div>
-                                </th>
-                                <th class="text-center">
-                                    <div>    
-                                        <strong>Núm. nota de crédito</strong>
-                                    </div>
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Tipo Trans</strong>
-                                    </div>    
-                                </th>
-                                <th class="text-center">
-                                    <div>
-                                        <strong>Número fact. afectado</strong>
-                                    </div>
-                                </th>
-                                <th class="text-end">
-                                    <div>
-                                        <strong>Total Compra incluyendo IVA</strong>
-                                    </div>
-                                </th>
-                                <th class="text-end">
-                                    <div>    
-                                        <strong>Compras exentas</strong>
-                                    </div>        
-                                </th>
-                                <th class="text-end">
-                                    <div>    
-                                        <strong>Sin derecho a cred. fiscal</strong>
-                                    </div>        
-                                </th>
-                                <th class="text-end">
-                                    <div>
-                                        <strong>Base Imponible</strong>
-                                    </div>
-                                </th>
-                                <th class="text-end">
-                                    <div>    
-                                        <strong>%<pre> </pre></strong>
-                                    </div>
-                                </th>
-                                <th class="text-end">
-                                    <div>
-                                        <strong>Impuesto IVA</strong>
-                                    </div>
-                                </th>
-                                <th class="text-end">
-                                    <div>
-                                        <strong>IVA Retenido</strong>
-                                    </div>        
-                                </th>
+                                <th class="text-center"><strong>Nº Oper</strong></th>
+                                <th class="text-center"><strong>Fecha de la factura</strong></th>
+                                <th class="text-center"><strong>Número de factura</strong></th>
+                                <th class="text-center"><strong>Número de Control</strong></th>
+                                <th class="text-center"><strong>Número N/D</strong></th>
+                                <th class="text-center"><strong>Número N/C</strong></th>
+                                <th class="text-center"><strong>Tipo Trans</strong></th>
+                                <th class="text-center"><strong>Número fact. afectado</strong></th>
+                                <th class="text-end"><strong>Total Compra incluyendo IVA</strong></th>
+                                <th class="text-end"><strong>Compras exentas</strong></th>
+                                <th class="text-end"><strong>Sin derecho a cred. fiscal</strong></th>
+                                <th class="text-end"><strong>Base Imponible</strong></th>
+                                <th class="text-end"><strong>% Alic</strong></th>
+                                <th class="text-end"><strong>Impuesto IVA</strong></th>
+                                <th class="text-end"><strong>IVA Retenido</strong></th>
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Reemplazo condicional seguro para Odoo v18 -->
+                            <t t-set="move_lines" t-value="o.payment_group_id.to_pay_move_line_ids or o.payment_group_id.matched_move_line_ids"/>
+                            <t t-if="move_lines">
+                                <t t-set="first_move" t-value="move_lines.move_id"/>
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center" style="font-size: 12px;"><span t-esc="report_date"/></td>
+                                    <td class="text-center"><span t-out="first_move.ref or first_move.name"/></td>
+                                    <td class="text-center"><span t-out="first_move.l10n_ve_document_number"/></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center">01</td>
+                                    <td class="text-center"></td>
+                                    <td class="text-end"><span t-field="o.total_amount"/></td>
+                                    <td class="text-end">0,00</td>
+                                    <td class="text-end">0,00</td>
+                                    <td class="text-end"><span t-field="o.withholdable_invoiced_amount"/></td>
+                                    <td class="text-end"><span t-field="o.tax_withholding_id.description"/></td>
+                                    <td class="text-end"><span t-field="o.withholdable_base_amount"/></td>
+                                    <td class="text-end"><span t-field="o.computed_withholding_amount"/></td>
+                                </tr>
+                            </t>
+                            <!-- Alineación matemática corregida: colspan="8" completa las 15 columnas del listado -->
                             <tr>
-                                <td class="text-center">1</td>
-                                <td class="text-center" style="font-size: 12px;"><span t-esc="report_date"/></td>
-                                <t t-if="o.payment_group_id.state == 'draft'">
-                                    <td class="text-center"><span t-field="o.payment_group_id.to_pay_move_line_ids[0].move_id.ref"/></td>
-                                    <td class="text-center"><span t-field="o.payment_group_id.to_pay_move_line_ids[0].move_id.l10n_ve_document_number"/></td>
-                                </t>
-                                <t t-else="">
-                                    <td class="text-center"><span t-field="o.payment_group_id.matched_move_line_ids[0].move_id.ref"/></td>
-                                    <td class="text-center"><span t-field="o.payment_group_id.matched_move_line_ids[0].move_id.l10n_ve_document_number"/></td>
-                                </t>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center">01</td>
-                                <td class="text-center"></td>
-                                <td class="text-end"><span t-field="o.total_amount"/></td>
-                                <td class="text-end">0,00</td>
-                                <td class="text-end">0,00</td>
-                                <td class="text-end"><span t-field="o.withholdable_invoiced_amount"/></td>
-                                <t t-set="iva_retention" t-value="o.get_iva_retention()"/>
-                                <td class="text-end"><span t-esc="iva_retention"/></td>
-                                <td class="text-end"><span t-field="o.withholdable_base_amount"/></td>
-                                <td class="text-end"><span t-field="o.computed_withholding_amount"/></td>
-                            </tr>
-                            <tr>
-                                <th class="text-end" style="padding-top:250px;" colspan="8">TOTALES</th>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;"><span t-field="o.total_amount"/></th>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;">0,00</th>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;">0,00</th>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;"><span t-field="o.withholdable_invoiced_amount"/></th>
-                                <th style="padding-top:250px; border-bottom:double;"/>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;"><span t-field="o.withholdable_base_amount"/></th>
-                                <th class="text-end" style="padding-top:250px; border-bottom:double;"><span t-field="o.computed_withholding_amount"/></th>
+                                <th class="text-end" style="padding-top:20px;" colspan="8">TOTALES</th>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;"><span t-field="o.total_amount"/></th>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;">0,00</th>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;">0,00</th>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;"><span t-field="o.withholdable_invoiced_amount"/></th>
+                                <th style="padding-top:20px; border-bottom:double;"/>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;"><span t-field="o.withholdable_base_amount"/></th>
+                                <th class="text-end" style="padding-top:20px; border-bottom:double;"><span t-field="o.computed_withholding_amount"/></th>
                             </tr>
                             <tr>
                                 <th class="text-end" colspan="14">Compras netas menos retención:</th>
@@ -222,16 +155,16 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="row text-center">
+                    <div class="row text-center mt-5">
                         <div class="col-1"></div>
-                        <div name="footer_left_column" class="col-2">
+                        <div name="footer_left_column" class="col-4">
                             ____________________________________ <br/>
                             FIRMA Y SELLO DEL <br/>
-                            ** AGENTE DE RETENCIÓN ** <br/>
+                            ** AGENTE DE RETENCION ** <br/>
                             Fecha de entrega:
                         </div>
-                        <div class="col-1"></div>
-                        <div name="footer_right_column" class="col-2">
+                        <div class="col-2"></div>
+                        <div name="footer_right_column" class="col-4">
                             ____________________________________ <br/>
                             FIRMA Y SELLO DEL <br/>
                             SUJETO RETENIDO

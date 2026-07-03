@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_withholding_certificate_document" inherit_id="l10n_ve_withholding.report_withholding_certificate_document">
+    <template id="report_withholding_certificate_document_inherit" inherit_id="l10n_ve_withholding.report_withholding_certificate_document">
         <xpath expr="//t" position="replace">
             <t t-call="web.basic_layout">
                 <t t-set="o" t-value="o.with_context(lang=lang)" />
@@ -53,7 +53,7 @@
                                 <td colspan="9"><span t-esc="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "no_tag_br": True}'/></td>
                             </tr>
                             <tr>
-                                <th class="text-start"  style="width:250px;">RIF.</th>
+                                <th class="text-start" style="width:250px;">RIF.</th>
                                 <td colspan="9"><span t-field="o.company_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code"/>-<span t-field="o.company_id.partner_id.vat"/></td>
                             </tr>
                         </tbody>
@@ -91,7 +91,7 @@
                                 <td colspan="3">
                                     <t t-foreach="o.payment_group_id.to_pay_move_line_ids" t-as="i">
                                         Nro: <span t-field="i.move_id.l10n_ve_document_number"/>, 
-                                        <t t-if="i.move_id.move_type == out_invoice">
+                                        <t t-if="i.move_id.move_type == 'out_invoice'">
                                             Fact: <span t-field="i.move_id.name"/>
                                         </t>
                                         <t t-else="">
@@ -117,18 +117,19 @@
                         <tbody>
                             <tr class="border border-dark">
                                 <td class="text-center"><span t-field="o.date" /></td>
-                                    <t t-if="o.payment_group_id.state == 'draft'">
-                                        <td class="text-center"><span t-field="o.payment_group_id.to_pay_move_line_ids[0].move_id.ref"/></td>
-                                        <td class="text-center"><span t-field="o.payment_group_id.to_pay_move_line_ids[0].move_id.l10n_ve_document_number"/></td>
-                                    </t>
-                                    <t t-else="">
-                                        <td class="text-center"><span t-field="o.payment_group_id.matched_move_line_ids[0].move_id.ref"/></td>
-                                        <td class="text-center"><span t-field="o.payment_group_id.matched_move_line_ids[0].move_id.l10n_ve_document_number"/></td>
-                                    </t>
+                                <t t-set="move_lines" t-value="o.payment_group_id.to_pay_move_line_ids or o.payment_group_id.matched_move_line_ids"/>
+                                <t t-if="move_lines">
+                                    <t t-set="first_move" t-value="move_lines.move_id"/>
+                                    <td class="text-center"><span t-out="first_move.name or first_move.ref"/></td>
+                                    <td class="text-center"><span t-out="first_move.l10n_ve_document_number"/></td>
+                                </t>
+                                <t t-else="">
+                                    <td class="text-center">N/A</td>
+                                    <td class="text-center">N/A</td>
+                                </t>
                                 <td class="text-center"><span t-field="o.total_amount"/></td>
                                 <td class="text-center"><span t-field="o.withholdable_invoiced_amount"/></td>
-                                <t t-set="iva_retention" t-value="o.get_iva_retention()"/>
-                                <th class="text-center"><span t-esc="iva_retention"/></th>
+                                <td class="text-center"><span t-field="o.tax_withholding_id.description"/></td>
                                 <td class="text-center" style="width:250px;"><span t-field="o.computed_withholding_amount"/></td>
                             </tr>
                             <tr>
@@ -178,7 +179,6 @@
         <field name="format">custom</field>
         <field name="page_height">297</field>
         <field name="page_width">210</field>
-        <field name="orientation">Portrait</field>
         <field name="margin_top">12</field>
         <field name="margin_bottom">8</field>
         <field name="margin_left">5</field>
@@ -189,15 +189,13 @@
         <field name="orientation">Landscape</field>
     </record>
 
-    <report
-        string="Certificado de Retención ISLR"
-        id="l10n_ve_withholding.action_report_withholding_certificate"
-        model="account.payment"
-        report_type="qweb-pdf"
-        name="l10n_ve_withholding.report_withholding_certificate"
-        file="l10n_ve_withholding.report_withholding_certificate"
-        print_report_name="'Certificado de Retención - %s' % (object.withholding_number or '')"
-        paperformat="report_qweb_paperformat_inherit"
-    />
-
+    <record id="action_report_withholding_certificate_islr_custom" model="ir.actions.report">
+        <field name="name">Certificado de Retención ISLR</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_ve_withholding.report_withholding_certificate</field>
+        <field name="report_file">l10n_ve_withholding.report_withholding_certificate</field>
+        <field name="print_report_name">'Certificado de Retención - %s' % (object.withholding_number or '')</field>
+        <field name="paperformat_id" ref="l10n_ve_withholding_custom.report_qweb_paperformat_inherit"/>
+    </record>
 </odoo>
