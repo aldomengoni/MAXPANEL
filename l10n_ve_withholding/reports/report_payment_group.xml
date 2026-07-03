@@ -39,12 +39,8 @@
 
         <xpath expr="//div[@id='informations']" position="inside">
             <div class="col-6">
-                <!-- IDENTIFICACION (ADQUIRIENTE-LOCATARIO-PRESTARIO) -->
-                <strong>
-                    <span t-out="o.partner_type == 'supplier' and 'Proveedor: ' or 'Cliente: '"/>
-                </strong>
+                <strong><span t-out="o.partner_type == 'supplier' and 'Proveedor: ' or 'Cliente: '"/></strong>
                 <span t-field="o.partner_id.name"/>
-                
                 <br/><strong>R.I.F:</strong> 
                 <span t-field="o.partner_id.l10n_latam_identification_type_id.l10n_ve_code"/>-<span t-field="o.partner_id.vat"/>
                 <br/>
@@ -64,12 +60,8 @@
                 <tbody>
                     <t t-foreach="o.payment_ids.filtered(lambda x: x.tax_withholding_id)" t-as="line">
                         <tr>
-                            <td>
-                                <span t-out="'%s - %s' % (line.tax_withholding_id.name, line.withholding_number or line.name)"/>
-                            </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-field="line.amount_company_currency"/>
-                            </td>
+                            <td><span t-out="'%s - %s' % (line.tax_withholding_id.name, line.withholding_number or line.name)"/></td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-field="line.amount_company_currency"/></td>
                         </tr>
                     </t>
                     <t t-foreach="o.payment_ids.filtered(lambda x: not x.tax_withholding_id)" t-as="line">
@@ -77,23 +69,17 @@
                             <td>
                                 <span t-field="line.journal_id.name"/>
                                 <t t-if="line.other_currency">
-                                    <span> (</span>
-                                    <span t-field="line.amount_signed" t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
-                                    <span>)</span>
+                                    <span> (</span><span t-field="line.amount_signed" t-options='{"widget": "monetary", "display_currency": line.currency_id}'/><span>)</span>
                                 </t>
                             </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-field="line.amount_company_currency"/>
-                            </td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-field="line.amount_company_currency"/></td>
                         </tr>
                     </t>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td><strong><span>Total Pagado</span></strong></td>
-                        <td class="text-right">
-                            <strong><span class="text-nowrap" t-field="o.payments_amount"/></strong>
-                        </td>
+                        <td class="text-right"><strong><span class="text-nowrap" t-field="o.payments_amount"/></strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -111,32 +97,22 @@
                     <t t-foreach="o.with_context(payment_group_id=o.id).matched_move_line_ids" t-as="line">
                         <tr>
                             <td><span t-field='line.move_id.display_name'/></td>
-                            <td class="text-center">
-                                <span class="text-nowrap" t-field="line.date_maturity"/>
-                            </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-out="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.balance" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                            </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-out="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.payment_group_matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                            </td>
+                            <td class="text-center"><span class="text-nowrap" t-field="line.date_maturity"/></td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-out="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.balance" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-out="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.payment_group_matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
                         </tr>
                     </t>
                     <tr t-if="o.unmatched_amount">
                         <td>A cuenta</td>
                         <td class="text-center"/>
                         <td class="text-right o_price_total"/>
-                        <td class="text-right o_price_total">
-                            <span class="text-nowrap" t-field="o.unmatched_amount"/>
-                        </td>
+                        <td class="text-right o_price_total"><span class="text-nowrap" t-field="o.unmatched_amount"/></td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="3"><strong><span>Total Imputado</span></strong></td>
-                        <td class="text-right">
-                            <strong><span class="text-nowrap" t-out="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong>
-                        </td>
+                        <td class="text-right"><strong><span class="text-nowrap" t-out="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -144,10 +120,7 @@
             <table class="table table-sm o_main_table" name="open_table" t-if="o.partner_type=='supplier'">
                 <thead>
                     <tr>
-                        <th>
-                            <span>Comprobantes Pendientes al </span>
-                            <span t-out="context_today().strftime('%d/%m/%Y')"/>
-                        </th>
+                        <th><span>Comprobantes Pendientes al </span><span t-out="context_today().strftime('%d/%m/%Y')"/></th>
                         <th class="text-center"><span>Fecha Venc.</span></th>
                         <th class="text-right"><span>Importe Original</span></th>
                         <th class="text-right"><span>Saldo</span></th>
@@ -158,15 +131,9 @@
                     <t t-foreach="lines" t-as="line">
                         <tr>
                             <td><span t-field='line.move_id.display_name'/></td>
-                            <td class="text-center">
-                                <span class="text-nowrap" t-field="line.date_maturity"/>
-                            </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-field="line.balance"/>
-                            </td>
-                            <td class="text-right o_price_total">
-                                <span class="text-nowrap" t-field="line.amount_residual"/>
-                            </td>
+                            <td class="text-center"><span class="text-nowrap" t-field="line.date_maturity"/></td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-field="line.balance"/></td>
+                            <td class="text-right o_price_total"><span class="text-nowrap" t-field="line.amount_residual"/></td>
                         </tr>
                     </t>
                 </tbody>
