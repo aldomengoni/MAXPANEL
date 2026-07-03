@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
     <template id="report_payment_group_document_inherit" inherit_id="account_payment_group.report_payment_group_document">
         <xpath expr="//t" position="after">
             <t t-set="report_date" t-value="o.payment_date"/>
@@ -52,6 +51,7 @@
                 <span t-esc="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "no_tag_br": True}'/>
             </div>
         </xpath>
+
         <xpath expr="//div[@id='informations']" position="after">
             <br/>
             <table class="table table-sm o_main_table" name="payments_table">
@@ -97,7 +97,6 @@
                     </tr>
                 </tfoot>
             </table>
-
             <br/>
             <table class="table table-sm o_main_table" name="matching_table">
                 <thead>
@@ -141,7 +140,6 @@
                     </tr>
                 </tfoot>
             </table>
-
             <br/>
             <table class="table table-sm o_main_table" name="open_table" t-if="o.partner_type=='supplier'">
                 <thead>
@@ -186,4 +184,3 @@
         </xpath>
     </template>
 </odoo>
-
