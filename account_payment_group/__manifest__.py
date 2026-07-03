@@ -27,7 +27,7 @@
         'views/account_payment_receiptbook_view.xml',
         'views/account_payment_view.xml',
         'views/account_move_line_view.xml',
-        'views/account_payment_group_view.xml',
+        #'views/account_payment_group_view.xml',
         # 'views/account_journal_dashboard_view.xml',
         'views/report_payment_group.xml',
         'data/decimal_precision_data.xml',
