@@ -21,9 +21,9 @@
     "data": [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'wizards/account_payment_group_invoice_wizard_view.xml',
-        'wizards/res_config_settings_views.xml',
-        'views/menuitem.xml',
+        #'wizards/account_payment_group_invoice_wizard_view.xml',
+        #'wizards/res_config_settings_views.xml',
+        #'views/menuitem.xml',
         #'views/account_payment_receiptbook_view.xml',
         #'views/account_payment_view.xml',
         #'views/account_move_line_view.xml',
