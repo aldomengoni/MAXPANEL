@@ -22,5 +22,7 @@ class L10nVeResponsibilityType(models.Model):
     code = fields.Char(required=True, index=True)
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('name', 'unique(name)', 'Name must be unique!'),
-                        ('code', 'unique(code)', 'Code must be unique!')]
+    # en 18 se llamaban l10n_ve_responsibility_type_name / _code; las viejas se
+    # eliminan en migrations/19.0.1.0.0/pre-migrate.py
+    _name_uniq = models.Constraint('unique(name)', 'Name must be unique!')
+    _code_uniq = models.Constraint('unique(code)', 'Code must be unique!')

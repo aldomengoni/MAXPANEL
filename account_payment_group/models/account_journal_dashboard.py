@@ -6,7 +6,7 @@ class AccountJournal(models.Model):
 
     def open_payments_action(self, payment_type, mode='list'):
         if payment_type == 'transfer':
-            ctx = self._context.copy()
+            ctx = self.env.context.copy()
             ctx.update({
                 'default_payment_type': payment_type,
                 'default_journal_id': self.id

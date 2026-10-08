@@ -16,8 +16,6 @@ from io import BytesIO
 import shutil
 import base64
 import csv
-import xlwt
-import pandas as pd
 
 
 class ResumenIVA(models.TransientModel):
@@ -57,8 +55,9 @@ class ResumenIVA(models.TransientModel):
             _log = BytesIO()
             wb = xlsxwriter.Workbook(_log, {'in_memory': True})
             buffer = io.BytesIO()
-            writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
-            workbook = writer.book
+            # antes se usaba pandas solo para obtener el workbook de xlsxwriter;
+            # pandas no está disponible en el entorno de Odoo 19 / Odoo.sh
+            workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
 
             # Resumen IVA
             sheet2 = workbook.add_worksheet()
@@ -208,7 +207,7 @@ class ResumenIVA(models.TransientModel):
             sheet2.write(37, 6, ' 7 ', title_style)
 
             # Guardando en local el Excel generado
-            writer.close()
+            workbook.close()
             wb.close()
             buffer.seek(0)
             content = buffer.read()

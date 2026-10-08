@@ -7,5 +7,6 @@ class AccountPaymentMethod(models.Model):
     @api.model
     def _get_payment_method_information(self):
         res = super()._get_payment_method_information()
-        res['withholding'] = {'mode': 'multi', 'domain': [('type', '=', 'cash')]}
+        # desde v17 se usa la clave 'type' (la clave 'domain' se ignoraba)
+        res['withholding'] = {'mode': 'multi', 'type': ('bank', 'cash')}
         return res

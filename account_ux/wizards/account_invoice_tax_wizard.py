@@ -12,7 +12,7 @@ class AccountInvoiceTaxWizard(models.TransientModel):
 
     @api.model
     def _get_invoice(self):
-        return self._context.get('active_id', False)
+        return self.env.context.get('active_id', False)
 
     tax_id = fields.Many2one(
         'account.tax',

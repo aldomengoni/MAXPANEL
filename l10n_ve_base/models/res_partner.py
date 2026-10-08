@@ -17,9 +17,7 @@ class ResPartner(models.Model):
         string=u'País',
         ondelete='restrict',
         help=u"País",
-        default=lambda self: self.env['res.country'].search(
-            [('name', '=', 'Venezuela')]
-        )[0].id
+        default=lambda self: self.env.ref('base.ve', raise_if_not_found=False)
     )
     state_id = fields.Many2one(
         "res.country.state",
@@ -43,7 +41,7 @@ class ResPartner(models.Model):
     )
     l10n_latam_identification_type_id = fields.Many2one(
         'l10n_latam.identification.type', string="Identification Type",
-        index=True, auto_join=True,
+        index=True, bypass_search_access=True,
         # default=lambda self: self.env.ref('l10n_ve_base.it_civ'),
         help="The type of identification")
     l10n_ve_responsibility_type_id = fields.Many2one(
@@ -82,11 +80,12 @@ class ResPartner(models.Model):
             },
         }
 
-    @api.constrains('vat', 'l10n_latam_identification_type_id')
-    def check_vat(self):
+    def _check_vat(self, validation='error'):
         """ Since we validate more documents than the vat for Venezuelan partners (RIF, CI) we
-        extend this method in order to process it. """
+        extend this method in order to process it.
+        En Odoo 19 la constraint check_vat fue reemplazada por _check_vat (llamado
+        desde el inverse de vat/country_id). """
         #TODO create validation method for each type of vat
         l10n_ve_partners = self.filtered(lambda x: x.l10n_latam_identification_type_id)
         #l10n_ve_partners.l10n_ve_identification_validation()
-        return super(ResPartner, self - l10n_ve_partners).check_vat()
+        return super(ResPartner, self - l10n_ve_partners)._check_vat(validation=validation)

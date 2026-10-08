@@ -12,7 +12,6 @@ class AccountMove(models.Model):
     )
     reversed_entry_id = fields.Many2one(
         'account.move',
-        states={'draft': [('readonly', False)]},
     )
     other_currency = fields.Boolean(compute='_compute_other_currency')
 
@@ -50,8 +49,10 @@ class AccountMove(models.Model):
     def action_send_invoice_mail(self):
         for rec in self.filtered(lambda x: x.is_invoice(include_receipts=True) and x.journal_id.mail_template_id):
             try:
-                rec.message_post_with_template(
-                    rec.journal_id.mail_template_id.id,
+                # message_post_with_template fue eliminado (v17+)
+                rec.message_post_with_source(
+                    rec.journal_id.mail_template_id,
+                    subtype_xmlid='mail.mt_comment',
                 )
             except Exception as error:
                 title = _(

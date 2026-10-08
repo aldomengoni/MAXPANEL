@@ -24,7 +24,8 @@
     'author': "Sinapsys Global SA",
     'website': "http://sinapsys.global",
     'category': 'Localization',
-    'version': '0.1',
+    'version': '19.0.0.1.0',
+    'license': 'LGPL-3',
     'depends': ['base','contacts'],
     'data': [
         'data/res.country.csv',

@@ -17,7 +17,6 @@ class AccountPaymentGroup(models.Model):
         'Adjustment / Advance (untaxed)',
         help='Sometimes used for withholdings calculation',
         readonly=True,
-        states={'draft': [('readonly', False)]},
     )
     selected_debt_untaxed = fields.Monetary(
         # string='To Pay lines Amount',

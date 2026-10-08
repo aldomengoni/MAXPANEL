@@ -25,9 +25,7 @@ class AccountVatLedger(models.Model):
         string='Company',
         required=True,
         readonly=True,
-        states={'draft': [('readonly', False)]},
-        default=lambda self: self.env[
-            'res.company']._company_default_get('account.vat.ledger')
+        default=lambda self: self.env.company
     )
     type = fields.Selection(
         [('sale', 'Sale'), ('purchase', 'Purchase')],
@@ -106,7 +104,7 @@ class AccountVatLedger(models.Model):
     @api.depends('type', 'reference',)
     def _compute_name(self):
         date_format = self.env['res.lang']._lang_get(
-            self._context.get('lang', 'en_US')).date_format
+            self.env.context.get('lang', 'en_US')).date_format
         for rec in self:
             if rec.type == 'sale':
                 ledger_type = _('Ventas')

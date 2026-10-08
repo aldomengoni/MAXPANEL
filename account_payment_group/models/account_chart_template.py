@@ -10,14 +10,14 @@ _logger = logging.getLogger(__name__)
 class AccountChartTemplate(models.AbstractModel):
     _inherit = 'account.chart.template'
 
-    def _load_template(self, company, code_digits=None, account_ref=None, taxes_ref=None):
+    def _post_load_data(self, template_code, company, template_data):
         """
-        Set localization to company when installing chart of account.
+        Generamos los talonarios de recibos al instalar el plan de cuentas.
+        En Odoo 19 ya no existe _load_template, se usa _post_load_data.
         """
-        self.ensure_one()
-        self.generate_receiptbooks(company)
-        return super(AccountChartTemplate, self)._load_template(
-            company, code_digits=code_digits, account_ref=account_ref, taxes_ref=taxes_ref)
+        res = super()._post_load_data(template_code, company, template_data)
+        self.generate_receiptbooks(company or self.env.company)
+        return res
 
     @api.model
     def generate_receiptbooks(self, company):

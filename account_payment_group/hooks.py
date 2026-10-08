@@ -13,13 +13,13 @@ def post_init_hook(env):
         ('payment_type', '!=', 'transfer')  # Usar payment_type en lugar de is_internal_transfer
     ])
     
-    # Manejo de estados para Odoo 18
+    # Estados de account.payment en Odoo 18/19
     state_mapping = {
         'draft': 'draft',
-        'posted': 'posted',
-        'sent': 'posted',      # En Odoo 18, 'sent' se considera 'posted'
-        'reconciled': 'posted', # 'reconciled' también se considera 'posted'
-        'cancelled': 'cancel'
+        'in_process': 'posted',
+        'paid': 'posted',
+        'canceled': 'cancel',
+        'rejected': 'cancel',
     }
     
     # Crear grupos de pago
@@ -35,7 +35,7 @@ def post_init_hook(env):
                 'partner_type': payment.partner_type,
                 'partner_id': payment.partner_id.id,
                 'payment_date': payment.date,
-                'communication': payment.ref,
+                'communication': payment.memo,
                 'payment_ids': [(4, payment.id, False)],
                 'state': _state,
             })

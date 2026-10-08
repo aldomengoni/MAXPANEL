@@ -22,8 +22,8 @@ class AccountAccount(models.Model):
 
     @api.constrains('currency_id')
     def check_currency(self):
-        for rec in self.filtered(lambda x: getattr(x, 'company_id', False) and x.currency_id == x.company_id.currency_id):
+        # en Odoo 19 account.account no tiene company_id (es company_ids)
+        for rec in self.filtered(lambda x: x.currency_id and x.currency_id == x.company_currency_id):
             raise ValidationError(_(
                 'Solo puede utilizar una moneda secundaria distinta a la '
-                'moneda de la compañía (%s).' % (
-                    rec.company_id.currency_id.name)))
+                'moneda de la compañía (%s).', rec.company_currency_id.name))

@@ -8,7 +8,7 @@
                 <field name="debit_move_id"/>
                 <field name="credit_move_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-                <group expand="0" string="Group By...">
+                <group>
                     <filter string="Debit Jouranl Entry" name="groupby_debit_move_id" context="{'group_by': 'debit_move_id'}"/>
                     <filter string="Credit Jouranl Entry" name="groupby_credit_move_id" context="{'group_by': 'credit_move_id'}"/>
                     <filter string="Company" context="{'group_by': 'company_id'}" name="groupby_company_id" groups="base.group_multi_company"/>

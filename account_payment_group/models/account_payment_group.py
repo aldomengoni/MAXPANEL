@@ -23,8 +23,7 @@ class AccountPaymentGroup(models.Model):
         'account.payment.receiptbook',
         'ReceiptBook',
         readonly=True,
-        states={'draft': [('readonly', False)]},
-        auto_join=True,
+        bypass_search_access=True,
         check_company=True,
         compute='_compute_receiptbook',
         store=True,
@@ -39,7 +38,7 @@ class AccountPaymentGroup(models.Model):
     )
     document_number = fields.Char(
         compute='_compute_document_number', inverse='_inverse_document_number',
-        string='Document Number', readonly=True, states={'draft': [('readonly', False)]})
+        string='Document Number', readonly=True)
     company_id = fields.Many2one(
         'res.company',
         string='Company',
@@ -48,7 +47,6 @@ class AccountPaymentGroup(models.Model):
         change_default=True,
         default=lambda self: self.env.company,
         readonly=True,
-        states={'draft': [('readonly', False)]},
     )
     payment_methods = fields.Char(
         string='Payment Methods',
@@ -65,7 +63,6 @@ class AccountPaymentGroup(models.Model):
         string='Partner',
         required=True,
         readonly=True,
-        states={'draft': [('readonly', False)]},
         tracking=True,
         change_default=True,
         index=True,
@@ -80,7 +77,6 @@ class AccountPaymentGroup(models.Model):
         required=True,
         default=lambda self: self.env.company.currency_id,
         readonly=True,
-        states={'draft': [('readonly', False)]},
         tracking=True,
     )
     payment_date = fields.Date(
@@ -88,13 +84,11 @@ class AccountPaymentGroup(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        states={'draft': [('readonly', False)]},
         index=True,
     )
     communication = fields.Char(
         string='Memo',
         readonly=True,
-        states={'draft': [('readonly', False)]},
     )
     notes = fields.Text(
         string='Notes'
@@ -115,7 +109,6 @@ class AccountPaymentGroup(models.Model):
     unreconciled_amount = fields.Monetary(
         string='Adjustment / Advance',
         readonly=True,
-        states={'draft': [('readonly', False)]},
     )
     # reconciled_amount = fields.Monetary(compute='_compute_amounts')
     to_pay_amount = fields.Monetary(
@@ -124,7 +117,6 @@ class AccountPaymentGroup(models.Model):
         string='To Pay Amount',
         # string='Total To Pay Amount',
         readonly=True,
-        states={'draft': [('readonly', False)]},
         tracking=True,
     )
     payments_amount = fields.Monetary(
@@ -158,7 +150,6 @@ class AccountPaymentGroup(models.Model):
         help='This lines are the ones the user has selected to be paid.',
         copy=False,
         readonly=True,
-        states={'draft': [('readonly', False)]},
         check_company=True
     )
     matched_move_line_ids = fields.Many2many(
@@ -183,10 +174,7 @@ class AccountPaymentGroup(models.Model):
         string='Payment Lines',
         copy=False,
         readonly=True,
-        states={
-            'draft': [('readonly', False)],
-            'confirmed': [('readonly', False)]},
-        auto_join=True,
+        bypass_search_access=True,
     )
     move_line_ids = fields.Many2many(
         'account.move.line',
@@ -204,9 +192,10 @@ class AccountPaymentGroup(models.Model):
         help="It indicates that the receipt has been sent."
     )
 
-    _sql_constraints = [
-        ('name_uniq', 'unique(name, receiptbook_id)',
-            'Document number must be unique per receiptbook!')]
+    _name_uniq = models.Constraint(
+        'unique(name, receiptbook_id)',
+        'Document number must be unique per receiptbook!',
+    )
 
     @api.depends(
         'state',
@@ -302,7 +291,7 @@ class AccountPaymentGroup(models.Model):
 
     @api.depends('company_id.double_validation', 'partner_type')
     def _compute_payment_subtype(self):
-        force_simple = self._context.get('force_simple')
+        force_simple = self.env.context.get('force_simple')
         for rec in self:
             if (rec.partner_type == 'supplier' and
                     rec.company_id.double_validation and not force_simple):
@@ -444,7 +433,7 @@ class AccountPaymentGroup(models.Model):
         2. do not reconcile (reconciled by super)
         3. do not check double validation
         TODO: may be we can improve code and actually do what we want for payments from payment groups"""
-        created_automatically = self._context.get('created_automatically')
+        created_automatically = self.env.context.get('created_automatically')
         posted_payment_groups = self.filtered(lambda x: x.state == 'posted')
         if posted_payment_groups:
             raise ValidationError(_(
@@ -516,7 +505,6 @@ class AccountPaymentGroup(models.Model):
             #     rec._message_sms_with_template(template=rec.receiptbook_id.mail_template_id)
         return True
 
-    @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
         if self.env.context.get('mark_payment_as_sent'):
             self.filtered(lambda rec: not rec.sent).write({'sent': True})
@@ -588,8 +576,8 @@ class AccountPaymentGroup(models.Model):
     @api.depends('company_id', 'partner_type')
     def _compute_receiptbook(self):
         for rec in self.filtered(lambda x: not x.receiptbook_id or x.receiptbook_id.company_id != x.company_id):
-            partner_type = self.partner_type or self._context.get(
-                'partner_type', self._context.get('default_partner_type', False))
+            partner_type = self.partner_type or self.env.context.get(
+                'partner_type', self.env.context.get('default_partner_type', False))
             receiptbook = self.env[
                 'account.payment.receiptbook'].search([
                     ('partner_type', '=', partner_type),

@@ -12,7 +12,6 @@ import xlsxwriter
 import shutil
 import base64
 import csv
-import xlwt
 
 _logger = logging.getLogger(__name__)
 

@@ -12,7 +12,7 @@ class AccountPaymentGroupInvoiceWizard(models.TransientModel):
     @api.model
     def default_payment_group(self):
         return self.env['account.payment.group'].browse(
-            self._context.get('active_id', False))
+            self.env.context.get('active_id', False))
 
     payment_group_id = fields.Many2one(
         'account.payment.group',
@@ -104,7 +104,7 @@ class AccountPaymentGroupInvoiceWizard(models.TransientModel):
                 'partner_id': self.payment_group_id.partner_id.id,
                 'company_id': self.payment_group_id.company_id.id,
             })
-            if self._context.get('internal_type') == 'debit_note':
+            if self.env.context.get('internal_type') == 'debit_note':
                 document_types = refund.l10n_latam_available_document_type_ids.filtered(lambda x: x.internal_type == 'debit_note')
                 self.journal_document_type_id = document_types and document_types[0]._origin or refund.l10n_latam_document_type_id
             else:
@@ -192,7 +192,7 @@ class AccountPaymentGroupInvoiceWizard(models.TransientModel):
         else:
             invoice_type = 'out_'
 
-        if self._context.get('refund'):
+        if self.env.context.get('refund'):
             invoice_type += 'refund'
         else:
             invoice_type += 'invoice'

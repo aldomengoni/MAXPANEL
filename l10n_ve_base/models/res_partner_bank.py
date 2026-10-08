@@ -36,14 +36,14 @@ class res_partner_bank(models.Model):
                 'value': {'acc_number': ''},
             }
 
-    @api.model
-    def create(self, vals):
-        if not vals['bank_id']:
-            raise exceptions.UserError(
-                _(u'Debe Seleccionar la Entidad Bancaria.')
-            )
-        res = super(res_partner_bank, self).create(vals)
-        return res
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('bank_id'):
+                raise exceptions.UserError(
+                    _(u'Debe Seleccionar la Entidad Bancaria.')
+                )
+        return super(res_partner_bank, self).create(vals_list)
 
     def write(self, vals):
         if 'bank_id' in vals:

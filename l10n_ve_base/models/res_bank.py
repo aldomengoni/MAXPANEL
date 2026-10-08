@@ -15,18 +15,18 @@ class res_bank(models.Model):
 
     _inherit = 'res.bank'
 
-    @api.model
-    def create(self, vals):
-        if not vals['name']:
-            raise exceptions.UserError(
-                _(u'Debe indicar el Nombre de la Entidad Bancaria.')
-            )
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('name'):
+                raise exceptions.UserError(
+                    _(u'Debe indicar el Nombre de la Entidad Bancaria.')
+                )
         # if not vals['bic']:
         #     raise exceptions.UserError(
         #         _(u'Debe indicar el Código de la Entidad Bancaria.')
         #     )
-        res = super(res_bank, self).create(vals)
-        return res
+        return super(res_bank, self).create(vals_list)
 
     def write(self, vals):
         if 'name' in vals:

@@ -6,9 +6,10 @@
 
 {
     'name': 'Accounting Sequence - Latam Documents',
-    'version': '1.0',
+    'version': '19.0.1.0.0',
+    'author': 'Odoo SA',
     'category': 'Hidden',
-    'description': "Change the way `sequence.mixin` works to reduce concurrency errors",
+    'description': "Módulo puente: en Odoo 19 los índices de nombre único para documentos LATAM los gestiona el núcleo (l10n_latam_invoice_document).",
     'depends': ['l10n_latam_invoice_document', 'account'],
     'installable': True,
     'auto_install': True,

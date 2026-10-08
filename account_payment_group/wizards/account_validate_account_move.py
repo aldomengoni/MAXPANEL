@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import UserError
 
 
@@ -6,14 +6,8 @@ class ValidateAccountMove(models.TransientModel):
     _inherit = "validate.account.move"
 
     def validate_move(self):
-        if self._context.get('active_model') == 'account.move':
-            domain = [('id', 'in', self._context.get('active_ids', [])), ('state', '=', 'draft')]
-        elif self._context.get('active_model') == 'account.journal':
-            domain = [('journal_id', '=', self._context.get('active_id')), ('state', '=', 'draft')]
-        else:
-            raise UserError(_("Missing 'active_model' in context."))
-
-        moves = self.env['account.move'].search(domain).filtered('line_ids')
+        # desde v17 el wizard ya tiene los asientos a validar en move_ids
+        moves = self.move_ids
 
         try:
             res = super().validate_move()
@@ -23,7 +17,7 @@ class ValidateAccountMove(models.TransientModel):
                 # we try to pay automatic if the pay now journal is setting on the invoice.
                 moves.pay_now()
                 if not self.env.context.get('l10n_ar_invoice_skip_commit'):
-                    self._cr.commit()
-            raise UserError(error)
+                    self.env.cr.commit()
+            raise
         moves.pay_now()
         return res

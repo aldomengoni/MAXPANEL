@@ -5,7 +5,7 @@
         <field name="name">account.account.form</field>
         <field name="inherit_id" ref="account.view_account_form"/>
         <field name="arch" type="xml">
-            <field name="allowed_journal_ids" position="after">
+            <field name="active" position="after">
                 <field name="analytic_distribution_required" groups="analytic.group_analytic_accounting"/>
             </field>
         </field>

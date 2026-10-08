@@ -6,7 +6,7 @@
 
     'author': "Moises Edson",
     'website': "",
-    'version': '18.0.0.1',
+    'version': '19.0.0.1.0',
     'category': 'Localization',
     'license': 'AGPL-3',
     'depends': [

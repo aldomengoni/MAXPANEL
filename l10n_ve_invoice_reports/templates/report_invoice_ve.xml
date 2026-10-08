@@ -44,32 +44,28 @@
                           <span t-field="o.amount_untaxed"/>
                       </td>
                   </tr>
-                  <t t-foreach="o.amount_by_group" t-as="amount_by_group">
-                      <tr style="">
-                          <t t-if="len(o.line_ids.filtered(lambda line: line.tax_line_id)) in [0, 1] and o.amount_untaxed == amount_by_group[2]">
-                              <td><span class="text-nowrap" t-esc="amount_by_group[0]"/></td>
-                              <td class="text-right o_price_total">
-                                  <span class="text-nowrap" t-esc="round(o.amount_str_in_company_currency(amount_by_group[3], o.currency_id.id, o.invoice_date), 2)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
-                              </td>
-                              <td class="text-right o_price_total">
-                                  <span class="text-nowrap" t-esc="amount_by_group[3]" />
-                              </td>
-                          </t>
-                          <t t-else="">
+                  <!-- amount_by_group se eliminó en Odoo 15; en 19 se usa tax_totals,
+                       que ya trae los importes en moneda de la compañía (tax_amount)
+                       y en moneda de la factura (tax_amount_currency) -->
+                  <t t-foreach="o.tax_totals.get('subtotals', [])" t-as="subtotal">
+                      <t t-foreach="subtotal['tax_groups']" t-as="tax_group">
+                          <tr style="">
                               <td>
-                                  <span t-esc="amount_by_group[0]"/>
-                                  <span class="text-nowrap"> de
-                                      <t t-esc="amount_by_group[4]"/>
-                                  </span>
+                                  <span t-out="tax_group['group_name']"/>
+                                  <t t-if="not o.tax_totals.get('same_tax_base')">
+                                      <span class="text-nowrap"> de
+                                          <t t-out="tax_group['display_base_amount_currency']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                      </span>
+                                  </t>
                               </td>
                               <td class="text-right o_price_total">
-                                  <span class="text-nowrap" t-esc="round(o.amount_str_in_company_currency(amount_by_group[3], o.currency_id.id, o.invoice_date), 2)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                  <span class="text-nowrap" t-out="tax_group['tax_amount']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                               </td>
                               <td class="text-right o_price_total">
-                                  <span class="text-nowrap" t-esc="amount_by_group[3]"/>
+                                  <span class="text-nowrap" t-out="tax_group['tax_amount_currency']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                               </td>
-                          </t>
-                      </tr>
+                          </tr>
+                      </t>
                   </t>
                   <tr class="border-black o_total">
                       <td><strong>Total</strong></td>

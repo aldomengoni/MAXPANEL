@@ -26,7 +26,7 @@ class AccountMoveLine(models.Model):
         Reciviendo un payment_group_id por contexto, decimos en ese payment
         group, cuanto se pago para la lína en cuestión.
         """
-        payment_group_id = self._context.get('payment_group_id')
+        payment_group_id = self.env.context.get('payment_group_id')
         if not payment_group_id:
             self.payment_group_matched_amount = 0.0
             return False

@@ -19,7 +19,6 @@ class AccountInvoice(models.Model):
         ' will be automatically paid with this journal. As manual payment'
         'method is used, only journals with manual method are shown.',
         readonly=True,
-        states={'draft': [('readonly', False)]},
     )
     payment_group_ids = fields.Many2many(
         'account.payment.group',
@@ -80,7 +79,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def pay_now(self):
-        # validate_payment = not self._context.get('validate_payment')
+        # validate_payment = not self.env.context.get('validate_payment')
         for rec in self:
             pay_journal = rec.pay_now_journal_id
             if pay_journal and rec.state == 'open':

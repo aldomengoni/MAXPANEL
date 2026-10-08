@@ -148,7 +148,7 @@ class AccountPaymentGroup(models.Model):
             ('partner_id', '=', self.partner_id.commercial_partner_id.id),
             ('account_id.account_type', '=', internal_group),
             ('reconciled', '=', False),
-            ('account_id.deprecated', '=', False),
+            ('account_id.active', '=', True),  # en 19 'deprecated' pasó a 'active'
             ('move_id.state', '=', 'posted'),
             ('company_id', '=', self.company_id.id)
         ]

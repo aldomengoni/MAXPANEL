@@ -82,7 +82,7 @@ class BandaCaculo(models.Model):
         help='Monto Retención'
     )
     complete_percentage = fields.Char(
-        'Porcentaje de retención',
+        'Porcentaje de retención (texto)',
         compute='_compute_complete_percentage', 
     )
     type_subtracting_rel = fields.Selection([
@@ -138,7 +138,7 @@ class SeniatTablaIslr(models.Model):
         help='Banda de calculo para la retención del ISLR'
     )
     complete_name = fields.Char(
-        'Código SENIAT',
+        'Nombre completo',
         compute='_compute_complete_name',
     )
     seniat_ut_id = fields.Many2one(

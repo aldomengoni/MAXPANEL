@@ -2,8 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, api, fields, _
+from odoo.fields import Domain
 from odoo.exceptions import ValidationError, UserError
-from odoo.tools.sql import index_exists, drop_index
 
 
 class AccountMove(models.Model):
@@ -20,7 +20,6 @@ class AccountMove(models.Model):
         ' will be automatically paid with this journal. As manual payment'
         'method is used, only journals with manual method are shown.',
         readonly=True,
-        states={'draft': [('readonly', False)]},
         # use copy false for two reasons:
         # 1. when making refund it's safer to make pay now empty (specially if automatic refund validation is enable)
         # 2. on duplicating an invoice it's safer also
@@ -36,6 +35,17 @@ class AccountMove(models.Model):
     payment_group_id = fields.Many2one(
         related='payment_ids.payment_group_id',
         store=True,
+    )
+
+    # Redefinimos el índice único del núcleo (l10n_latam_invoice_document) para
+    # excluir los asientos generados desde grupos de pago (su número lo da el
+    # talonario de recibos). Antes se recreaba a mano en _auto_init.
+    _unique_name = models.UniqueIndex(
+        "(name, journal_id)"
+        " WHERE (state = 'posted' AND name != '/'"
+        " AND (l10n_latam_document_type_id IS NULL OR move_type NOT IN ('in_invoice', 'in_refund', 'in_receipt'))"
+        " AND payment_group_id IS NULL)",
+        "Another entry with the same name already exists.",
     )
 
     def _compute_payment_groups(self):
@@ -83,7 +93,7 @@ class AccountMove(models.Model):
         return res
 
     def pay_now(self):
-        # validate_payment = not self._context.get('validate_payment')
+        # validate_payment = not self.env.context.get('validate_payment')
         for rec in self:
             pay_journal = rec.pay_now_journal_id
             if pay_journal and rec.state == 'posted' and rec.payment_state in ['not_paid', 'patial']:
@@ -193,21 +203,8 @@ class AccountMove(models.Model):
         return where_string, param
 
     @api.model
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        if self._context.get('without_payment_group'):
-            args += [('payment_group_id', '=', False)]
-        return super()._search(args, offset=offset, limit=limit, order=order)
-
-    def _auto_init(self):
-        super()._auto_init()
-        # Update the generic unique name constraint to not consider the purchases in latam companies.
-        # The name should be unique by partner for those documents.
-        drop_index(self.env.cr, "account_move_unique_name", self._table)
-        self.env.cr.execute("""
-            CREATE UNIQUE INDEX account_move_unique_name
-                                ON account_move(name, journal_id)
-                            WHERE (state = 'posted' AND name != '/'
-                            AND (l10n_latam_document_type_id IS NULL OR move_type NOT IN ('in_invoice', 'in_refund', 'in_receipt')))
-                            AND payment_group_id IS NULL;
-        """)
+    def _search(self, domain, *args, **kwargs):
+        if self.env.context.get('without_payment_group'):
+            domain = Domain(domain) & Domain('payment_group_id', '=', False)
+        return super()._search(domain, *args, **kwargs)
 

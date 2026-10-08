@@ -11,5 +11,5 @@ class AccountGroup(models.Model):
     child_ids = fields.One2many(
         'account.group',
         'parent_id',
-        auto_join=True,
+        bypass_search_access=True,
     )

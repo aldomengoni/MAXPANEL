@@ -15,16 +15,16 @@ class AccountMoveReversal(models.TransientModel):
 
 
     def _prepare_default_reversal(self, move):
-        return {
+        # llamamos a super para conservar los valores que agrega Odoo 19
+        # (invoice_currency_rate, invoice_origin, tipo/número de documento latam, etc.)
+        res = super()._prepare_default_reversal(move)
+        res.update({
             'ref': _('Reversión de: %s, %s') % (move.name, self.reason) if self.reason else _('Reversión de: %s') % (move.name),
             'date': self.date or move.date,
-            'invoice_date': move.is_invoice(include_receipts=True) and (self.date or move.date) or False,
             'journal_id': self.journal_id and self.journal_id.id or move.journal_id.id,
-            'invoice_payment_term_id': None,
-            'auto_post': 'at_date' if self.date > fields.Date.context_today(self) else 'no',
-            'invoice_user_id': move.invoice_user_id.id,
-            'l10n_ve_document_number': ""
-        }
+            'l10n_ve_document_number': "",
+        })
+        return res
 
 
     #TODO: ver si esto es necesario.

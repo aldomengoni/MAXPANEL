@@ -25,7 +25,15 @@
         </record>
 
     <!-- Retenciones iva -->
+        <!-- En 19 tax_group_id es obligatorio y depende del país del impuesto -->
+        <record id="tax_group_retenciones" model="account.tax.group">
+            <field name="name">Retenciones</field>
+            <field name="country_id" ref="base.ve"/>
+        </record>
+
         <record id="tax_retencion_iva" model="account.tax">
+            <field name="country_id" ref="base.ve"/>
+            <field name="tax_group_id" ref="tax_group_retenciones"/>
             <!-- <field name="chart_template_id" ref="l10n_ve.ve_chart_template_amd"/> -->
             <field name="name">Retencion de IVA en compras</field>
             <field name="description">16%</field>
@@ -62,6 +70,8 @@
 
         <!-- Retenciones ISLR -->
         <record id="tax_retencion_islr" model="account.tax">
+            <field name="country_id" ref="base.ve"/>
+            <field name="tax_group_id" ref="tax_group_retenciones"/>
             <field name="name">Retención ISLR</field>
             <field name="description">Retención ISLR</field>
             <field name="sequence">4</field>

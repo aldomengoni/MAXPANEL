@@ -3,6 +3,7 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from odoo.fields import Domain
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -63,11 +64,12 @@ class AccountPayment(models.Model):
         'l10n_latam.document.type',
         string='l10n_latam_document_type',
         )
-    # is_internal_transfer = fields.Boolean(
-    #     compute='_compute_is_internal_transfer',
-    #     string='Is Internal Transfer',
-    #     store=False
-    #     )
+    is_internal_transfer = fields.Boolean(
+        compute='_compute_is_internal_transfer',
+        search='_search_is_internal_transfer',
+        string='Is Internal Transfer',
+        store=False
+        )
 
 
     @api.depends('payment_type', 'payment_group_id')
@@ -226,7 +228,7 @@ class AccountPayment(models.Model):
             'res_model': 'account.payment',
             'target': 'new',
             'res_id': self.id,
-            'context': self._context,
+            'context': self.env.context,
         }
 
     def button_open_payment_group(self):
@@ -252,27 +254,38 @@ class AccountPayment(models.Model):
         return res
 
     @api.model
-    def _get_trigger_fields_to_sincronize(self):
-        res = super()._get_trigger_fields_to_sincronize()
+    def _get_trigger_fields_to_synchronize(self):
+        # antes tenia una errata (_sincronize) y nunca se llamaba
+        res = super()._get_trigger_fields_to_synchronize()
         return res + ('force_amount_company_currency',)
 
-    # @api.depends_context('default_is_internal_transfer')
-    # def _compute_is_internal_transfer(self):
-    #     """ Este campo se recomputa cada vez que cambia un diario y queda en False porque el segundo diario no va a
-    #     estar completado. Como nosotros tenemos un menú especifico para poder registrar las transferencias internas,
-    #     entonces si estamos en este menu siempre es transferencia interna"""
-    #     if self._context.get('default_is_internal_transfer'):
-    #         self.is_internal_transfer = True
-    #     else:
-    #         self.is_internal_transfer = False
+    @api.depends_context('default_is_internal_transfer')
+    def _compute_is_internal_transfer(self):
+        """ Este campo se recomputa cada vez que cambia un diario y queda en False porque el segundo diario no va a
+        estar completado. Como nosotros tenemos un menú especifico para poder registrar las transferencias internas,
+        entonces si estamos en este menu siempre es transferencia interna"""
+        if self.env.context.get('default_is_internal_transfer'):
+            self.is_internal_transfer = True
+        else:
+            self.is_internal_transfer = False
 
         #     return super()._compute_is_internal_transfer()
 
-    def _create_paired_internal_transfer_payment(self):
-        for rec in self:
-            super(AccountPayment, rec.with_context(
-                default_force_amount_company_currency=rec.force_amount_company_currency
-            ))._create_paired_internal_transfer_payment()
+    def _search_is_internal_transfer(self, operator, value):
+        """ En Odoo 19 buscar sobre un campo no almacenado sin search= lanza error (en 18 se ignoraba).
+        Se consideran transferencias internas los pagos emparejados (paired_internal_transfer_payment_id)
+        y los pagos sin grupo de pago ni contacto, que son los que se registran desde el menú Transferencias."""
+        if operator != 'in':
+            return NotImplemented
+        transfer = Domain('paired_internal_transfer_payment_id', '!=', False) | (
+            Domain('payment_group_id', '=', False) & Domain('partner_id', '=', False))
+        if True in value and False in value:
+            return Domain.TRUE
+        if True in value:
+            return transfer
+        if False in value:
+            return ~transfer
+        return Domain.FALSE
 
     @api.onchange("payment_type")
     def _compute_label(self):
