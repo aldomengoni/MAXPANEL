@@ -63,11 +63,11 @@ class AccountPayment(models.Model):
         'l10n_latam.document.type',
         string='l10n_latam_document_type',
         )
-    is_internal_transfer = fields.Boolean(
-        compute='_compute_is_internal_transfer',
-        string='Is Internal Transfer',
-        store=False
-        )
+    # is_internal_transfer = fields.Boolean(
+    #     compute='_compute_is_internal_transfer',
+    #     string='Is Internal Transfer',
+    #     store=False
+    #     )
 
 
     @api.depends('payment_type', 'payment_group_id')
@@ -256,15 +256,15 @@ class AccountPayment(models.Model):
         res = super()._get_trigger_fields_to_sincronize()
         return res + ('force_amount_company_currency',)
 
-    @api.depends_context('default_is_internal_transfer')
-    def _compute_is_internal_transfer(self):
-        """ Este campo se recomputa cada vez que cambia un diario y queda en False porque el segundo diario no va a
-        estar completado. Como nosotros tenemos un menú especifico para poder registrar las transferencias internas,
-        entonces si estamos en este menu siempre es transferencia interna"""
-        if self._context.get('default_is_internal_transfer'):
-            self.is_internal_transfer = True
-        else:
-            self.is_internal_transfer = False
+    # @api.depends_context('default_is_internal_transfer')
+    # def _compute_is_internal_transfer(self):
+    #     """ Este campo se recomputa cada vez que cambia un diario y queda en False porque el segundo diario no va a
+    #     estar completado. Como nosotros tenemos un menú especifico para poder registrar las transferencias internas,
+    #     entonces si estamos en este menu siempre es transferencia interna"""
+    #     if self._context.get('default_is_internal_transfer'):
+    #         self.is_internal_transfer = True
+    #     else:
+    #         self.is_internal_transfer = False
 
         #     return super()._compute_is_internal_transfer()
 

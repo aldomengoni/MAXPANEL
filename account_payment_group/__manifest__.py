@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
     "name": "Account Payment with Multiple methods",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.3.1",
     "category": "Accounting",
     "website": "www.adhoc.com.ar",
     "author": "ADHOC SA, AITIC S.A.S",
